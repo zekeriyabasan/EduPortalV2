@@ -12,7 +12,7 @@ namespace EduPortalV2.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly AppDBContext _context;
+        private readonly AppDBContext _context; // Dependency Inversion
 
         public CategoriesController(AppDBContext context)
         {
