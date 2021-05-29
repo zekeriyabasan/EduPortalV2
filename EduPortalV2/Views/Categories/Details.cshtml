@@ -1,0 +1,25 @@
+﻿@model EduPortalV2.Models.Category
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="alert alert-info"><strong>Kategori Detay Sayfası</strong></div>
+
+<div>
+    <h4>Kategori Detayı</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CategoryName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CategoryName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Düzenle</a> |
+    <a asp-action="Index">Kategori Listesine Dön</a>
+</div>
