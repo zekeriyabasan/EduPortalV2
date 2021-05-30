@@ -101,8 +101,8 @@ namespace EduPortalV2.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Id", course.CategoryId);
-            ViewData["EducatorId"] = new SelectList(_context.Educator, "Id", "Id", course.EducatorId);
+            ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "CategoryName", course.CategoryId);
+            ViewData["EducatorId"] = new SelectList(_context.Educator, "Id", "NameSurname", course.EducatorId);
             return View(course);
         }
 
