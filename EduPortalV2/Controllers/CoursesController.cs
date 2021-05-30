@@ -49,8 +49,8 @@ namespace EduPortalV2.Controllers
         // GET: Courses/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Id");
-            ViewData["EducatorId"] = new SelectList(_context.Educator, "Id", "Id");
+            ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "CategoryName");
+            ViewData["EducatorId"] = new SelectList(_context.Educator, "Id", "NameSurname");
             return View();
         }
 
@@ -61,10 +61,26 @@ namespace EduPortalV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,CourseName,CourseDescription,Code,CuotaCount,PriceDaily,VideoUrl,DocumentUrl,CategoryId,EducatorId")] Course course)
         {
+          
             if (ModelState.IsValid)
             {
+
                 _context.Add(course);
                 await _context.SaveChangesAsync();
+                
+                
+                var enrollment = new Enrollment();
+
+                string userName = User.Identity.Name;
+                var userId = _context.Users.Where(x => x.Email == userName).Select(x=> x.Id).First();
+                enrollment.CourseID = course.Id;
+                enrollment.UserID = userId;
+
+                _context.Add(enrollment);
+                await _context.SaveChangesAsync();
+
+
+                // enrollment.UserID = userId;
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Id", course.CategoryId);

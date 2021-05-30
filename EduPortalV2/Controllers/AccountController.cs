@@ -9,16 +9,20 @@ using System.Threading.Tasks;
 
 namespace EduPortalV2.Controllers
 {
+
     public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager; // injection
-
+        private readonly RoleManager<IdentityRole> _roleManager;
         public AccountController(UserManager<IdentityUser> userManager,
-                                      SignInManager<IdentityUser> signInManager)
+                                      SignInManager<IdentityUser> signInManager,
+                                      RoleManager<IdentityRole> roleManager
+                                      )
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
         public IActionResult Index()
         {
@@ -41,7 +45,39 @@ namespace EduPortalV2.Controllers
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
+                string isStudent = string.Empty;
 
+                if (model.Role)
+                {
+                    isStudent = "Educator";
+                    IdentityResult roleResult;
+                    bool adminRoleExists = await _roleManager.RoleExistsAsync(isStudent);
+                    if (!adminRoleExists)
+                    {
+                        roleResult = await _roleManager.CreateAsync(new IdentityRole(isStudent));
+                    }
+
+                    if (!await _userManager.IsInRoleAsync(user, isStudent))
+                    {
+                        var userResult = await _userManager.AddToRoleAsync(user, isStudent);
+                    }
+                }
+                else
+                {
+                    isStudent = "Student";
+                    IdentityResult roleResult;
+                    bool adminRoleExists = await _roleManager.RoleExistsAsync(isStudent);
+                    if (!adminRoleExists)
+                    {
+                        roleResult = await _roleManager.CreateAsync(new IdentityRole(isStudent));
+                    }
+
+                    if (!await _userManager.IsInRoleAsync(user, isStudent))
+                    {
+                        var userResult = await _userManager.AddToRoleAsync(user, isStudent);
+                    }
+                }
+                
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
@@ -89,5 +125,6 @@ namespace EduPortalV2.Controllers
 
             return RedirectToAction("Login");
         }
+    
     }
 }

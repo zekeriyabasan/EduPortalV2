@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EduPortalV2.Migrations
 {
-    public partial class EduMigV2 : Migration
+    public partial class Mig : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

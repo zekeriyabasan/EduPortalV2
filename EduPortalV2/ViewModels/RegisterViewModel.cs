@@ -19,5 +19,7 @@ namespace EduPortalV2.ViewModels
         [Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "Password and confirmation password not match.")]
         public string ConfirmPassword { get; set; }
+        [Display(Name = "Eğitmenseniz İşaretleyiniz.")]
+        public bool Role { get; set; }
     }
 }

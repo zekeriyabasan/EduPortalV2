@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EduPortalV2.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20210529200235_EduMigV2")]
-    partial class EduMigV2
+    [Migration("20210530165512_Mig")]
+    partial class Mig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
