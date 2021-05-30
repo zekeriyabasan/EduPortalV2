@@ -9,9 +9,9 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-nav bg-dark border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">EduPortalPro</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Eğitim Portalı</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -19,21 +19,21 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     @if (User.Identity.IsAuthenticated)
                     {
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-lg-shrink-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
+                            <a class="btn btn-outline-success btn-sm" asp-area="" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Kategori</a>
+                            <a class="btn btn-outline-primary btn-sm" asp-area="" asp-controller="Categories" asp-action="Index">Kurs Kategorileri</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Courses" asp-action="Index">Eğitim Tanım</a>
+                            <a class="btn btn-outline-primary btn-sm" asp-area="" asp-controller="Courses" asp-action="Index">Kurslar</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Educators" asp-action="Index">Eğitmen</a>
+                            <a class="btn btn-outline-primary btn-sm" asp-area="" asp-controller="Educators" asp-action="Index">Eğitmenler</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Çıkış</a>
+                            <a class="btn btn-outline-danger btn-sm" asp-area="" asp-controller="Account" asp-action="Logout">Çıkış</a>
                         </li>
 
                     </ul>
@@ -42,10 +42,10 @@
                     {
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Giriş</a>
+                                <a class="nav-link text-success" asp-area="" asp-controller="Account" asp-action="Login">Giriş</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Kaydol</a>
+                                <a class="nav-link text-primary" asp-area="" asp-controller="Account" asp-action="Register">Kaydol</a>
                             </li>
                         </ul>
                     }
