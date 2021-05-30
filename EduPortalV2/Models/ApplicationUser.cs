@@ -8,6 +8,9 @@ namespace EduPortalV2.Models
 {
     public class ApplicationUser:IdentityUser
     {
-        public virtual Enrollment Enrollment { get; set; }
+        public virtual ICollection<Enrollment> Enrollments { get; set; }
+        public virtual ICollection<Educator> Educators { get; set; }
+        public virtual ICollection<MyCourse> MyCourses { get; set; }
+
     }
 }

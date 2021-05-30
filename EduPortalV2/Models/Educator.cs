@@ -15,6 +15,9 @@ namespace EduPortalV2.Models
         public string NameSurname { get; set; }
         [DisplayName("Eğitmen Bilgisi")]
         public bool EducationType { get; set; }
+        public string UserId { get; set; }
         public virtual ICollection<Course> Courses { get; set; }
+        public virtual ICollection<MyCourse> MyCourses { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
     }
 }

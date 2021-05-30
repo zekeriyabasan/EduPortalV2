@@ -12,22 +12,25 @@ using Microsoft.AspNetCore.Authorization;
 namespace EduPortalV2.Controllers
 {
     [Authorize()]
-    public class CategoriesController : Controller
+    public class MyCoursesController : Controller
     {
-        private readonly AppDBContext _context; // Dependency Inversion
+        private readonly AppDBContext _context;
 
-        public CategoriesController(AppDBContext context)
+        public MyCoursesController(AppDBContext context)
         {
             _context = context;
         }
 
-        // GET: Categories
+        // GET: MyCourses
+        [Authorize(Roles ="Student")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Category.ToListAsync());
+            var appDBContext = _context.MyCourse.Include(m => m.Course);
+            return View(await appDBContext.ToListAsync());
         }
 
-        // GET: Categories/Details/5
+        // GET: MyCourses/Details/5
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,41 +38,48 @@ namespace EduPortalV2.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Category
+            var myCourse = await _context.MyCourse
+                .Include(m => m.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            if (myCourse == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(myCourse);
         }
 
-        // GET: Categories/Create
-        [Authorize(Roles = "Educator")]
+        // GET: MyCourses/Create
+        [Authorize(Roles = "Student")]
         public IActionResult Create()
         {
+            ViewData["CourseId"] = new SelectList(_context.Course, "Id", "CourseName");
             return View();
         }
 
-        // POST: Categories/Create
+        // POST: MyCourses/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CategoryName")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,CourseId,EducaterId,UserId,Statu")] MyCourse myCourse)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
+                var userId = UserControl();
+                var course = _context.Course.Find(myCourse.CourseId);
+                myCourse.EducaterId = course.EducatorId;
+                myCourse.UserId = userId;
+                _context.Add(myCourse);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["CourseId"] = new SelectList(_context.Course, "Id", "Id", myCourse.CourseId);
+            return View(myCourse);
         }
 
-        // GET: Categories/Edit/5
-        [Authorize(Roles = "Educator")]
+        // GET: MyCourses/Edit/5
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,22 +87,23 @@ namespace EduPortalV2.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Category.FindAsync(id);
-            if (category == null)
+            var myCourse = await _context.MyCourse.FindAsync(id);
+            if (myCourse == null)
             {
                 return NotFound();
             }
-            return View(category);
+            ViewData["CourseId"] = new SelectList(_context.Course, "Id", "Id", myCourse.CourseId);
+            return View(myCourse);
         }
 
-        // POST: Categories/Edit/5
+        // POST: MyCourses/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryName")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,EducaterId,UserId,Statu")] MyCourse myCourse)
         {
-            if (id != category.Id)
+            if (id != myCourse.Id)
             {
                 return NotFound();
             }
@@ -101,12 +112,12 @@ namespace EduPortalV2.Controllers
             {
                 try
                 {
-                    _context.Update(category);
+                    _context.Update(myCourse);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.Id))
+                    if (!MyCourseExists(myCourse.Id))
                     {
                         return NotFound();
                     }
@@ -117,11 +128,12 @@ namespace EduPortalV2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["CourseId"] = new SelectList(_context.Course, "Id", "Id", myCourse.CourseId);
+            return View(myCourse);
         }
 
-        // GET: Categories/Delete/5
-        [Authorize(Roles = "Educator")]
+        // GET: MyCourses/Delete/5
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,30 +141,38 @@ namespace EduPortalV2.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Category
+            var myCourse = await _context.MyCourse
+                .Include(m => m.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            if (myCourse == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(myCourse);
         }
 
-        // POST: Categories/Delete/5
+        // POST: MyCourses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Category.FindAsync(id);
-            _context.Category.Remove(category);
+            var myCourse = await _context.MyCourse.FindAsync(id);
+            _context.MyCourse.Remove(myCourse);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        private bool MyCourseExists(int id)
         {
-            return _context.Category.Any(e => e.Id == id);
+            return _context.MyCourse.Any(e => e.Id == id);
+        }
+        public string UserControl()
+        {
+            string userName = User.Identity.Name;
+            var userId = _context.Users.Where(x => x.Email == userName).Select(x => x.Id).First();
+
+            return userId;
         }
     }
 }

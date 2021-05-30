@@ -4,14 +4,16 @@ using EduPortalV2.Models.AppDBContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EduPortalV2.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210530202155_EDuMig2")]
+    partial class EDuMig2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,42 +128,6 @@ namespace EduPortalV2.Migrations
                     b.HasIndex("CourseID");
 
                     b.ToTable("Enrollments");
-                });
-
-            modelBuilder.Entity("EduPortalV2.Models.MyCourse", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EducaterId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("EducatorId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Statu")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("EducatorId");
-
-                    b.ToTable("MyCourse");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -418,29 +384,6 @@ namespace EduPortalV2.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("EduPortalV2.Models.MyCourse", b =>
-                {
-                    b.HasOne("EduPortalV2.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany("MyCourses")
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("EduPortalV2.Models.Course", "Course")
-                        .WithMany("MyCourses")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EduPortalV2.Models.Educator", "Educator")
-                        .WithMany("MyCourses")
-                        .HasForeignKey("EducatorId");
-
-                    b.Navigation("ApplicationUser");
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Educator");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -500,15 +443,11 @@ namespace EduPortalV2.Migrations
             modelBuilder.Entity("EduPortalV2.Models.Course", b =>
                 {
                     b.Navigation("Enrollments");
-
-                    b.Navigation("MyCourses");
                 });
 
             modelBuilder.Entity("EduPortalV2.Models.Educator", b =>
                 {
                     b.Navigation("Courses");
-
-                    b.Navigation("MyCourses");
                 });
 
             modelBuilder.Entity("EduPortalV2.Models.ApplicationUser", b =>
@@ -516,8 +455,6 @@ namespace EduPortalV2.Migrations
                     b.Navigation("Educators");
 
                     b.Navigation("Enrollments");
-
-                    b.Navigation("MyCourses");
                 });
 #pragma warning restore 612, 618
         }

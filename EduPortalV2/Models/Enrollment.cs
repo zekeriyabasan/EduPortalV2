@@ -12,7 +12,7 @@ namespace EduPortalV2.Models
         [Key]
         public int EnrollmentID { get; set; }
         public int CourseID { get; set; }
-        [ForeignKey("ApplicationUser")]
+        //[ForeignKey("ApplicationUser")]
         public string UserID { get; set; }
         public virtual Course Course { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }

@@ -7,9 +7,7 @@
 
 <div class="alert alert-info"><strong>Eğitmenler</strong></div>
 
-<p>
-    <a asp-action="Create" class="btn btn-outline-success btn-sm">Eğitmen Ekle</a>
-</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -31,11 +29,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.EducationType)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">Düzenle</a> |
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark btn-sm">Detaylar</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Sil</a>
-            </td>
+            
         </tr>
 }
     </tbody>

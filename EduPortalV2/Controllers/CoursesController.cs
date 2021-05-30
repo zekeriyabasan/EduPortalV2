@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EduPortalV2.Models;
 using EduPortalV2.Models.AppDBContext;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EduPortalV2.Controllers
 {
+    [Authorize()]
     public class CoursesController : Controller
     {
         private readonly AppDBContext _context;
@@ -47,8 +49,10 @@ namespace EduPortalV2.Controllers
         }
 
         // GET: Courses/Create
+        [Authorize(Roles = "Educator")]
         public IActionResult Create()
         {
+           
             ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "CategoryName");
             ViewData["EducatorId"] = new SelectList(_context.Educator, "Id", "NameSurname");
             return View();
@@ -64,15 +68,15 @@ namespace EduPortalV2.Controllers
           
             if (ModelState.IsValid)
             {
-
+                var userId = UserControl();
+                course.EducatorId = _context.Educator.Where(x => x.UserId == userId).Select(x => x.Id).First();
                 _context.Add(course);
                 await _context.SaveChangesAsync();
                 
                 
                 var enrollment = new Enrollment();
 
-                string userName = User.Identity.Name;
-                var userId = _context.Users.Where(x => x.Email == userName).Select(x=> x.Id).First();
+                
                 enrollment.CourseID = course.Id;
                 enrollment.UserID = userId;
 
@@ -84,11 +88,12 @@ namespace EduPortalV2.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Id", course.CategoryId);
-            ViewData["EducatorId"] = new SelectList(_context.Educator, "Id", "Id", course.EducatorId);
+            
             return View(course);
         }
 
         // GET: Courses/Edit/5
+        [Authorize(Roles = "Educator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -113,6 +118,11 @@ namespace EduPortalV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,CourseName,CourseDescription,Code,CuotaCount,PriceDaily,VideoUrl,DocumentUrl,CategoryId,EducatorId")] Course course)
         {
+            var userId = _context.Educator.Where(x => x.Id == course.EducatorId).Select(x => x.UserId).First();
+            if (userId==null)
+            {
+                 return Content("Size Ait Olmayan Kursta Değişiklik Yapamazsınız.");
+            }
             if (id != course.Id)
             {
                 return NotFound();
@@ -122,6 +132,8 @@ namespace EduPortalV2.Controllers
             {
                 try
                 {
+                    var userInfoId = UserControl();
+                    course.EducatorId = _context.Educator.Where(x => x.UserId == userInfoId).Select(x => x.Id).First();
                     _context.Update(course);
                     await _context.SaveChangesAsync();
                 }
@@ -139,13 +151,15 @@ namespace EduPortalV2.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Id", course.CategoryId);
-            ViewData["EducatorId"] = new SelectList(_context.Educator, "Id", "Id", course.EducatorId);
+            
             return View(course);
         }
 
         // GET: Courses/Delete/5
+        [Authorize(Roles = "Educator")]
         public async Task<IActionResult> Delete(int? id)
         {
+            
             if (id == null)
             {
                 return NotFound();
@@ -168,6 +182,12 @@ namespace EduPortalV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var eduId = _context.Course.Find(id);
+            var userId = _context.Educator.Where(x => x.Id == eduId.EducatorId).Select(x => x.UserId).First();
+            if (userId == null)
+            {
+                return Content("Size Ait Olmayan Kursta Değişiklik Yapamazsınız.");
+            }
             var course = await _context.Course.FindAsync(id);
             _context.Course.Remove(course);
             await _context.SaveChangesAsync();
@@ -177,6 +197,13 @@ namespace EduPortalV2.Controllers
         private bool CourseExists(int id)
         {
             return _context.Course.Any(e => e.Id == id);
+        }
+        public string UserControl()
+        {
+            string userName = User.Identity.Name;
+            var userId = _context.Users.Where(x => x.Email == userName).Select(x => x.Id).First();
+
+            return userId;
         }
     }
 }

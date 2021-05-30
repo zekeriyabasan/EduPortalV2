@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EduPortalV2.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20210530165512_Mig")]
-    partial class Mig
+    [Migration("20210530213846_EDuMig3")]
+    partial class EDuMig3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -86,13 +86,21 @@ namespace EduPortalV2.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("EducationType")
                         .HasColumnType("bit");
 
                     b.Property<string>("NameSurname")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Educator");
                 });
@@ -104,21 +112,58 @@ namespace EduPortalV2.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("CourseID")
                         .HasColumnType("int");
 
                     b.Property<string>("UserID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EnrollmentID");
 
+                    b.HasIndex("ApplicationUserId");
+
                     b.HasIndex("CourseID");
 
-                    b.HasIndex("UserID")
-                        .IsUnique()
-                        .HasFilter("[UserID] IS NOT NULL");
-
                     b.ToTable("Enrollments");
+                });
+
+            modelBuilder.Entity("EduPortalV2.Models.MyCourse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EducaterId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("EducatorId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Statu")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("EducatorId");
+
+                    b.ToTable("MyCourse");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -349,21 +394,53 @@ namespace EduPortalV2.Migrations
                     b.Navigation("Educator");
                 });
 
+            modelBuilder.Entity("EduPortalV2.Models.Educator", b =>
+                {
+                    b.HasOne("EduPortalV2.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("Educators")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("EduPortalV2.Models.Enrollment", b =>
                 {
+                    b.HasOne("EduPortalV2.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("EduPortalV2.Models.Course", "Course")
                         .WithMany("Enrollments")
                         .HasForeignKey("CourseID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("EduPortalV2.Models.MyCourse", b =>
+                {
                     b.HasOne("EduPortalV2.Models.ApplicationUser", "ApplicationUser")
-                        .WithOne("Enrollment")
-                        .HasForeignKey("EduPortalV2.Models.Enrollment", "UserID");
+                        .WithMany("MyCourses")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("EduPortalV2.Models.Course", "Course")
+                        .WithMany("MyCourses")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EduPortalV2.Models.Educator", "Educator")
+                        .WithMany("MyCourses")
+                        .HasForeignKey("EducatorId");
 
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("Course");
+
+                    b.Navigation("Educator");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -425,16 +502,24 @@ namespace EduPortalV2.Migrations
             modelBuilder.Entity("EduPortalV2.Models.Course", b =>
                 {
                     b.Navigation("Enrollments");
+
+                    b.Navigation("MyCourses");
                 });
 
             modelBuilder.Entity("EduPortalV2.Models.Educator", b =>
                 {
                     b.Navigation("Courses");
+
+                    b.Navigation("MyCourses");
                 });
 
             modelBuilder.Entity("EduPortalV2.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("Enrollment");
+                    b.Navigation("Educators");
+
+                    b.Navigation("Enrollments");
+
+                    b.Navigation("MyCourses");
                 });
 #pragma warning restore 612, 618
         }

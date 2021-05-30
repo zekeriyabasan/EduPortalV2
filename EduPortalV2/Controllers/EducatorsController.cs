@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EduPortalV2.Models;
 using EduPortalV2.Models.AppDBContext;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EduPortalV2.Controllers
 {
+    [Authorize()]
     public class EducatorsController : Controller
     {
         private readonly AppDBContext _context;

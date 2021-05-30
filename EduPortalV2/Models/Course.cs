@@ -38,5 +38,6 @@ namespace EduPortalV2.Models
         public virtual Educator Educator { get; set; }
         [DisplayName("Kayıtlar")]
         public virtual ICollection<Enrollment> Enrollments { get; set; }
+        public virtual ICollection<MyCourse> MyCourses { get; set; }
     }
 }

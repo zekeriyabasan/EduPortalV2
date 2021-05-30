@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EduPortalV2.Migrations
 {
-    public partial class Mig : Migration
+    public partial class EDuMig : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -220,14 +220,15 @@ namespace EduPortalV2.Migrations
                     EnrollmentID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CourseID = table.Column<int>(type: "int", nullable: false),
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Enrollments", x => x.EnrollmentID);
                     table.ForeignKey(
-                        name: "FK_Enrollments_AspNetUsers_UserID",
-                        column: x => x.UserID,
+                        name: "FK_Enrollments_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -289,16 +290,14 @@ namespace EduPortalV2.Migrations
                 column: "EducatorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Enrollments_ApplicationUserId",
+                table: "Enrollments",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Enrollments_CourseID",
                 table: "Enrollments",
                 column: "CourseID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Enrollments_UserID",
-                table: "Enrollments",
-                column: "UserID",
-                unique: true,
-                filter: "[UserID] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

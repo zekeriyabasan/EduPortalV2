@@ -26,5 +26,6 @@ namespace EduPortalV2.Models.AppDBContext
         public DbSet<EduPortalV2.Models.Category> Category { get; set; }
         public DbSet<EduPortalV2.Models.Educator> Educator { get; set; }
         public DbSet<EduPortalV2.Models.Course> Course { get; set; }
+        public DbSet<EduPortalV2.Models.MyCourse> MyCourse { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using EduPortalV2.ViewModels;
+﻿using EduPortalV2.Models;
+using EduPortalV2.Models.AppDBContext;
+using EduPortalV2.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +17,19 @@ namespace EduPortalV2.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager; // injection
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly AppDBContext _context;
+
+        
         public AccountController(UserManager<IdentityUser> userManager,
                                       SignInManager<IdentityUser> signInManager,
-                                      RoleManager<IdentityRole> roleManager
+                                      RoleManager<IdentityRole> roleManager,
+                                       AppDBContext context
                                       )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _context = context;
         }
         public IActionResult Index()
         {
@@ -61,6 +68,16 @@ namespace EduPortalV2.Controllers
                     {
                         var userResult = await _userManager.AddToRoleAsync(user, isStudent);
                     }
+                    string userName = model.Email;
+                    var userId = _userManager.FindByNameAsync(userName);
+
+                    var educator = new Educator();
+                    educator.NameSurname = model.Email;
+                    educator.UserId = userId.Result.Id;
+                    educator.EducationType = true;
+                    _context.Add(educator);
+                    await _context.SaveChangesAsync();
+
                 }
                 else
                 {

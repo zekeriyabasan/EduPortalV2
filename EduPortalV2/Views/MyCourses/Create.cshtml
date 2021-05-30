@@ -1,37 +1,38 @@
-﻿@model EduPortalV2.Models.Educator
+﻿@model EduPortalV2.Models.MyCourse
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="alert alert-info"><strong>Eğitmen Oluşturma Sayfası</strong></div>
+<h1>Create</h1>
 
-<h4>Eğitmen</h4>
+<h4>MyCourse</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="NameSurname" class="control-label"></label>
-                <input asp-for="NameSurname" class="form-control" />
-                <span asp-validation-for="NameSurname" class="text-danger"></span>
+                <label asp-for="CourseId" class="control-label"></label>
+                <select asp-for="CourseId" class ="form-control" asp-items="ViewBag.CourseId"></select>
             </div>
+         
+          
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="EducationType" /> @Html.DisplayNameFor(model => model.EducationType)
+                    <input class="form-check-input" asp-for="Statu" /> @Html.DisplayNameFor(model => model.Statu)
                 </label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Oluştur" class="btn btn-success" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Eğitmen Listesine Dön</a>
+    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
