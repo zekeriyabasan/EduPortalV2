@@ -133,11 +133,11 @@ namespace EduPortalV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,CourseName,CourseDescription,Code,CuotaCount,PriceDaily,VideoUrl,DocumentUrl,CategoryId,EducatorId")] Course course)
         {
-            var userId = _context.Educator.Where(x => x.Id == course.EducatorId).Select(x => x.UserId).First();
-            if (userId==null)
-            {
-                 return Content("Size Ait Olmayan Kursta Değişiklik Yapamazsınız.");
-            }
+            //var userId = _context.Educator.Where(x => x.Id == course.EducatorId).Select(x => x.UserId).First();
+            //if (userId==null)
+            //{
+            //     return Content("Size Ait Olmayan Kursta Değişiklik Yapamazsınız.");
+            //}
             if (id != course.Id)
             {
                 return NotFound();
