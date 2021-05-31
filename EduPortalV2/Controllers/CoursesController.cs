@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EduPortalV2.Models;
 using EduPortalV2.Models.AppDBContext;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace EduPortalV2.Controllers
 {
@@ -15,16 +16,30 @@ namespace EduPortalV2.Controllers
     public class CoursesController : Controller
     {
         private readonly AppDBContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public CoursesController(AppDBContext context)
+        public CoursesController(AppDBContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Courses
         public async Task<IActionResult> Index()
         {
+            var userId = UserControl();
+            var user = new IdentityUser
+            {
+               Id=userId
+            };
+           
+            var role = await _userManager.IsInRoleAsync(user, "Student");
             var appDBContext = _context.Course.Include(c => c.Category).Include(c => c.Educator);
+            if (!role)
+            {
+                var course = appDBContext.Where(x => x.Educator.UserId == userId);
+                return View(await course.ToListAsync());
+            }
             return View(await appDBContext.ToListAsync());
         }
 

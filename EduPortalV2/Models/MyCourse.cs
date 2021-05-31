@@ -9,6 +9,7 @@ namespace EduPortalV2.Models
     public class MyCourse
     {
         public int Id { get; set; }
+        [DisplayName("Kurs Adı")]
         public int CourseId { get; set; }
         public int EducaterId { get; set; }
         public string UserId { get; set; }

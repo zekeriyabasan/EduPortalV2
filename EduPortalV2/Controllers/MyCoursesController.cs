@@ -25,8 +25,12 @@ namespace EduPortalV2.Controllers
         [Authorize(Roles ="Student")]
         public async Task<IActionResult> Index()
         {
-            var appDBContext = _context.MyCourse.Include(m => m.Course);
-            return View(await appDBContext.ToListAsync());
+            
+            var userId = UserControl();
+
+            var appDBContext = _context.MyCourse.Include(m => m.Course).Include(m => m.Educator).Include(m => m.ApplicationUser);
+            var myCourse = appDBContext.Where(x => x.UserId == userId);
+            return View(await myCourse.ToListAsync());
         }
 
         // GET: MyCourses/Details/5
@@ -66,15 +70,18 @@ namespace EduPortalV2.Controllers
         {
             if (ModelState.IsValid)
             {
+               
                 var userId = UserControl();
                 var course = _context.Course.Find(myCourse.CourseId);
                 myCourse.EducaterId = course.EducatorId;
+                
                 myCourse.UserId = userId;
                 _context.Add(myCourse);
                 await _context.SaveChangesAsync();
+                
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Course, "Id", "Id", myCourse.CourseId);
+            ViewData["CourseId"] = new SelectList(_context.Course, "Id", "CourseName", myCourse.CourseId);
             return View(myCourse);
         }
 
@@ -92,7 +99,7 @@ namespace EduPortalV2.Controllers
             {
                 return NotFound();
             }
-            ViewData["CourseId"] = new SelectList(_context.Course, "Id", "Id", myCourse.CourseId);
+            ViewData["CourseId"] = new SelectList(_context.Course, "Id", "CourseName", myCourse.CourseId);
             return View(myCourse);
         }
 
@@ -112,7 +119,12 @@ namespace EduPortalV2.Controllers
             {
                 try
                 {
-                    _context.Update(myCourse);
+                    var list = _context.MyCourse.Find(myCourse.Id);
+                    list.CourseId = myCourse.CourseId;
+                    list.Statu = myCourse.Statu;
+                    var course = _context.Course.Find(myCourse.CourseId);
+                    list.EducaterId = course.EducatorId;
+                    _context.Update(list);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -142,7 +154,7 @@ namespace EduPortalV2.Controllers
             }
 
             var myCourse = await _context.MyCourse
-                .Include(m => m.Course)
+                .Include(m => m.Course).Include(m => m.Educator).Include(m => m.ApplicationUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (myCourse == null)
             {
