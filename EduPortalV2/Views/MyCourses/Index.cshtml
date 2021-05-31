@@ -22,6 +22,12 @@
                 @Html.DisplayNameFor(model => model.UserId)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Course.VideoUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Course.DocumentUrl)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Statu)
             </th>
             <th>
@@ -33,26 +39,32 @@
     <tbody style="font-size:small">
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EducaterId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Statu)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Course.CourseName)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">Düzenle</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark btn-sm">Detaylar</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Sil</a>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EducaterId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Course.VideoUrl)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Course.DocumentUrl)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Statu)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Course.CourseName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">Düzenle</a>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark btn-sm">Detaylar</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Sil</a>
 
-                </td>
-            </tr>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
